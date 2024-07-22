@@ -100,17 +100,18 @@ class HuntCommands(commands.Cog):
 
         player_hp = player['health']
         monster_hp = monster['health']
-        while player_hp > 0 and monster_hp > 0:
-            monster_hp -= player['strength']
-            embed.description += f"\n\nYou attacked the {monster['name']}! It has {monster_hp} HP left."
-            await interaction.edit_original_message(embed=embed)
-            await asyncio.sleep(1.5)
-
-            if monster_hp > 0:
-                player_hp -= monster['strength']
-                embed.description += f"\nThe {monster['name']} attacked you! You have {player_hp} HP left."
+        if equipment is None:
+            while player_hp > 0 and monster_hp > 0:
+                monster_hp -= player['strength']
+                embed.description += f"\n\nYou attacked the {monster['name']}! It has {monster_hp} HP left."
                 await interaction.edit_original_message(embed=embed)
                 await asyncio.sleep(1.5)
+
+                if monster_hp > 0:
+                    player_hp -= monster['strength']
+                    embed.description += f"\nThe {monster['name']} attacked you! You have {player_hp} HP left."
+                    await interaction.edit_original_message(embed=embed)
+                    await asyncio.sleep(1.5)
 
         if player_hp > 0:
             embed.description += f"\n\nCongratulations! You defeated the {monster['name']}!"
