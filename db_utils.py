@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-client = MongoClient("mongodb+srv://rammex:C3gP2ZCYfobrCLr1@kaikodb.92gz2dv.mongodb.net/")
+client = MongoClient("")
 
 db = client["kaikodb"]
 
