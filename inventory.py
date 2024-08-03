@@ -1,6 +1,6 @@
 from db_utils import get_equipmentdb, get_inventorydb, get_playerdb
 import random
-
+from items import *
 
 def add_item_to_inventory(owner_id, name, quantity, quality, level, xp, type, damage, durability, description, rarity):
     inventorydb = get_inventorydb()
@@ -19,159 +19,14 @@ def generate_item(owner_id):
     level = player["level"]
     itemgenerate = random.randint(1, 100)
     if itemgenerate > 93:
-        if level < 5:
-            items = [
-                {
-                    "name": "Common Sword",
-                    "quantity": 1,
-                    "quality": "F",
-                    "level": 1,
-                    "xp": 0,
-                    "type": "primary",
-                    "damage": 10,
-                    "durability": 100,
-                    "description": "A common Sword.",
-                    "rarity": "common"
-                },
-                {
-                    "name": "Common Shield",
-                    "quantity": 1,
-                    "quality": "F",
-                    "level": 1,
-                    "xp": 0,
-                    "type": "secondary",
-                    "damage": 0,
-                    "durability": 150,
-                    "description": "A common Shield.",
-                    "rarity": "common"
-                },
-                {
-                    "name": "Common Helmet",
-                    "quantity": 1,
-                    "quality": "F",
-                    "level": 1,
-                    "xp": 0,
-                    "type": "helmet",
-                    "damage": 0,
-                    "durability": 150,
-                    "description": "A common Helmet.",
-                    "rarity": "common"
-                },
-                {
-                    "name": "Common Chestplate",
-                    "quantity": 1,
-                    "quality": "F",
-                    "level": 1,
-                    "xp": 0,
-                    "type": "chestplate",
-                    "damage": 0,
-                    "durability": 150,
-                    "description": "A common Chestplate.",
-                    "rarity": "common"
-                },
-                {
-                    "name": "Common Boots",
-                    "quantity": 1,
-                    "quality": "F",
-                    "level": 1,
-                    "xp": 0,
-                    "type": "boots",
-                    "damage": 0,
-                    "durability": 150,
-                    "description": "A common Boots.",
-                    "rarity": "common"
-                }
-            ]
-        if level >= 5 and level < 10:
-            items = [
-                {
-                    "name": "Uncommon Sword",
-                    "quantity": 1,
-                    "quality": "D",
-                    "level": 5,
-                    "xp": 0,
-                    "type": "primary",
-                    "damage": 20,
-                    "durability": 200,
-                    "description": "An uncommon Sword.",
-                    "rarity": "uncommon"
-                },
-                {
-                    "name": "Uncommon Shield",
-                    "quantity": 1,
-                    "quality": "D",
-                    "level": 5,
-                    "xp": 0,
-                    "type": "secondary",
-                    "damage": 0,
-                    "durability": 300,
-                    "description": "An uncommon Shield.",
-                    "rarity": "uncommon"
-                },
-                {
-                    "name": "Uncommon Helmet",
-                    "quantity": 1,
-                    "quality": "D",
-                    "level": 5,
-                    "xp": 0,
-                    "type": "helmet",
-                    "damage": 0,
-                    "durability": 300,
-                    "description": "An uncommon Helmet.",
-                    "rarity": "uncommon"
-                },
-                {
-                    "name": "Uncommon Chestplate",
-                    "quantity": 1,
-                    "quality": "D",
-                    "level": 5,
-                    "xp": 0,
-                    "type": "chestplate",
-                    "damage": 0,
-                    "durability": 300,
-                    "description": "An uncommon Chestplate.",
-                    "rarity": "uncommon"
-                },
-                {
-                    "name": "Uncommon Boots",
-                    "quantity": 1,
-                    "quality": "D",
-                    "level": 5,
-                    "xp": 0,
-                    "type": "boots",
-                    "damage": 0,
-                    "durability": 300,
-                    "description": "An uncommon Boots.",
-                    "rarity": "uncommon"
-                }
-            ]
-        if level > 90:
-            items = [
-                {
-                    "name": "Legendary Sword",
-                    "quantity": 1,
-                    "quality": "S",
-                    "level": 100,
-                    "xp": 0,
-                    "type": "primary",
-                    "damage": 100,
-                    "durability": 1000,
-                    "description": "A legendary sword made by the creator.",
-                    "rarity": "legendary"
-                },
-                {
-                    "name": "Legendary Shield",
-                    "quantity": 1,
-                    "quality": "S",
-                    "level": 100,
-                    "xp": 0,
-                    "type": "secondary",
-                    "damage": 0,
-                    "durability": 1500,
-                    "description": "A legendary shield made by the creator.",
-                    "rarity": "legendary"
-                }
-            ]
+        if level <= 5:
+            items = getitemlv5()
+        if level <= 10:
+            items = getitemlv10()
+        if level <= 20:
+            items = getitemlv20()
+        if level >= 90:
+            items = getitemlv90()
         new_item = random.choice(items)
         new_item["owner_id"] = owner_id
         same_type_items = [item for item in get_items_by_owner(owner_id) if
