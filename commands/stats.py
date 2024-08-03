@@ -21,7 +21,7 @@ async def start(interaction: Interaction, member: nextcord.Member = None, byid: 
             else:
                 embed = nextcord.Embed(
                     title=" ",
-                    description=f"Money: {player['money']}\nLevel: {player['level']}\nXP: {player['xp']}/{player['level']*105.3}\nMana : {player['mana']}\nHealth : {player['health']}\nStrength : {player['strength']}\nDexterity : {player['dexterity']}\nIntelligence : {player['intelligence']}\nSpeed : {player['speed']}",
+                    description=f"Money: {player['money']}\nLevel: {player['level']}\nXP: {player['xp']}/{player['level']*105.3}\nMana : {player['mana']} / 500\nHealth : {player['health']}\nStrength : {player['strength']}\nDexterity : {player['dexterity']}\nIntelligence : {player['intelligence']}\nSpeed : {player['speed']}",
                     color=nextcord.Color.random()
                 )
                 embed.set_footer(text="Kaiko v1.0")
@@ -35,7 +35,7 @@ async def start(interaction: Interaction, member: nextcord.Member = None, byid: 
                 member = await bot.fetch_user(int(byid))
                 embed = nextcord.Embed(
                     title=" ",
-                    description=f"Money: {player['money']}\nLevel: {player['level']}\nXP: {player['xp']}/{player['level']*105.3}\nMana : {player['mana']}\nHealth : {player['health']}\nStrength : {player['strength']}\nDexterity : {player['dexterity']}\nIntelligence : {player['intelligence']}\nSpeed : {player['speed']}",
+                    description=f"Money: {player['money']}\nLevel: {player['level']}\nXP: {player['xp']}/{player['level']*105.3}\nMana : {player['mana']} / 500\nHealth : {player['health']}\nStrength : {player['strength']}\nDexterity : {player['dexterity']}\nIntelligence : {player['intelligence']}\nSpeed : {player['speed']}",
                     color=nextcord.Color.random()
                 )
                 embed.set_footer(text="Kaiko v1.0")
@@ -48,7 +48,7 @@ async def start(interaction: Interaction, member: nextcord.Member = None, byid: 
         else:
             embed = nextcord.Embed(
                 title=" ",
-                description=f"Money: {player['money']}\nLevel: {player['level']}\nXP: {player['xp']}/{player['level']*105.3}\nMana : {player['mana']}\nHealth : {player['health']}\nStrength : {player['strength']}\nDexterity : {player['dexterity']}\nIntelligence : {player['intelligence']}\nSpeed : {player['speed']}",
+                description=f"Money: {player['money']}\nLevel: {player['level']}\nXP: {player['xp']}/{player['level']*105.3}\nMana : {player['mana']} / 500\nHealth : {player['health']}\nStrength : {player['strength']}\nDexterity : {player['dexterity']}\nIntelligence : {player['intelligence']}\nSpeed : {player['speed']}",
                 color=nextcord.Color.random()
             )
             embed.set_footer(text="Kaiko v1.0")

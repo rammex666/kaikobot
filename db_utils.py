@@ -10,6 +10,8 @@ inventory_db = db["inventory"]
 
 equipment_db = db["equipment"]
 
+shop_db = db["shop"]
+
 
 def get_equipmentdb():
     return equipment_db
@@ -21,3 +23,6 @@ def get_inventorydb():
 
 def get_playerdb():
     return player_db
+
+def get_shopdb():
+    return shop_db

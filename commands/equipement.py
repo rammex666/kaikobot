@@ -20,12 +20,12 @@ class HelmetSelect(nextcord.ui.Select):
         helmet = get_helmet_name_by_id(helmet_id)
         if helmet is not None and isinstance(helmet, dict):
             helmet_name = helmet['name']
-            await interaction.response.send_message(f'You selected {helmet_name}')
+            await interaction.response.send_message(f'You selected {helmet_name}', ephemeral=True)
             equipmentdb = get_equipmentdb()
             equipmentdb.update_one({"_id": interaction.user.id}, {"$set": {"helmetid": helmet_id}}, upsert=True)
             equipmentdb.update_one({"_id": interaction.user.id}, {"$set": {"helmetname": helmet_name}}, upsert=True)
         else:
-            await interaction.response.send_message('Helmet not found in the inventory.')
+            await interaction.response.send_message('Helmet not found in the inventory.', ephemeral=True)
 
 
 def get_helmet_name_by_id(helmet_id):
@@ -45,12 +45,12 @@ class ChestSelect(nextcord.ui.Select):
         chest = get_chest_name_by_id(chest_id)
         if chest is not None and isinstance(chest, dict):
             chest_name = chest['name']
-            await interaction.response.send_message(f'You selected {chest_name}')
+            await interaction.response.send_message(f'You selected {chest_name}', ephemeral=True)
             equipmentdb = get_equipmentdb()
             equipmentdb.update_one({"_id": interaction.user.id}, {"$set": {"chestid": chest_id}}, upsert=True)
             equipmentdb.update_one({"_id": interaction.user.id}, {"$set": {"chestname": chest_name}}, upsert=True)
         else:
-            await interaction.response.send_message('chest not found in the inventory.')
+            await interaction.response.send_message('chest not found in the inventory.', ephemeral=True)
 
 
 def get_chest_name_by_id(helmet_id):
@@ -70,12 +70,12 @@ class BootsSelect(nextcord.ui.Select):
         boots = get_boots_name_by_id(boots_id)
         if boots is not None and isinstance(boots, dict):
             boots_name = boots['name']
-            await interaction.response.send_message(f'You selected {boots_name}')
+            await interaction.response.send_message(f'You selected {boots_name}', ephemeral=True)
             equipmentdb = get_equipmentdb()
             equipmentdb.update_one({"_id": interaction.user.id}, {"$set": {"bootsid": boots_id}}, upsert=True)
             equipmentdb.update_one({"_id": interaction.user.id}, {"$set": {"bootsname": boots_name}}, upsert=True)
         else:
-            await interaction.response.send_message('Boots not found in the inventory.')
+            await interaction.response.send_message('Boots not found in the inventory.', ephemeral=True)
 
 
 def get_boots_name_by_id(boots_id):
@@ -95,12 +95,12 @@ class PrimarySelect(nextcord.ui.Select):
         primary = get_primary_name_by_id(primary_id)
         if primary is not None and isinstance(primary, dict):
             primary_name = primary['name']
-            await interaction.response.send_message(f'You selected {primary_name}')
+            await interaction.response.send_message(f'You selected {primary_name}', ephemeral=True)
             equipmentdb = get_equipmentdb()
             equipmentdb.update_one({"_id": interaction.user.id}, {"$set": {"primaryid": primary_id}}, upsert=True)
             equipmentdb.update_one({"_id": interaction.user.id}, {"$set": {"primaryname": primary_name}}, upsert=True)
         else:
-            await interaction.response.send_message('Primary weapon not found in the inventory.')
+            await interaction.response.send_message('Primary weapon not found in the inventory.', ephemeral=True)
 
 
 class SecondarySelect(nextcord.ui.Select):
@@ -112,13 +112,13 @@ class SecondarySelect(nextcord.ui.Select):
         secondary = get_secondary_name_by_id(secondary_id)
         if secondary is not None and isinstance(secondary, dict):
             secondary_name = secondary['name']
-            await interaction.response.send_message(f'You selected {secondary_name}')
+            await interaction.response.send_message(f'You selected {secondary_name}', ephemeral=True)
             equipmentdb = get_equipmentdb()
             equipmentdb.update_one({"_id": interaction.user.id}, {"$set": {"secondaryid": secondary_id}}, upsert=True)
             equipmentdb.update_one({"_id": interaction.user.id}, {"$set": {"secondaryname": secondary_name}},
                                    upsert=True)
         else:
-            await interaction.response.send_message('Secondary weapon not found in the inventory.')
+            await interaction.response.send_message('Secondary weapon not found in the inventory.', ephemeral=True)
 
 
 def get_secondary_name_by_id(secondary_id):
@@ -198,7 +198,7 @@ async def equip(interaction: Interaction):
         if equipment is None:
             embed = nextcord.Embed(
                 title=" ",
-                description=f"Helmet:\nArmor:\nBoots:\nPrimary:\nSecondary: ",
+                description=f"Helmet:\nChestPlate:\nBoots:\nPrimary:\nSecondary: ",
                 color=nextcord.Color.random()
             )
             embed.set_footer(text="Kaiko v1.0")
@@ -208,7 +208,7 @@ async def equip(interaction: Interaction):
         else:
             embed = nextcord.Embed(
                 title=" ",
-                description=f"Helmet: {equipment.get('helmetname', 'Not equipped')}\nArmor: {equipment.get('armorname', 'Not equipped')}\nBoots: {equipment.get('bootsname', 'Not equipped')}\nPrimary: {equipment.get('primaryname', 'Not equipped')}\nSecondary: {equipment.get('secondaryname', 'Not equipped')}",
+                description=f"Helmet: {equipment.get('helmetname', 'Not equipped')}\nChestPlate: {equipment.get('chestname', 'Not equipped')}\nBoots: {equipment.get('bootsname', 'Not equipped')}\nPrimary: {equipment.get('primaryname', 'Not equipped')}\nSecondary: {equipment.get('secondaryname', 'Not equipped')}",
                 color=nextcord.Color.random()
             )
             embed.set_footer(text="Kaiko v1.0")

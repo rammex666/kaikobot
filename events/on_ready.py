@@ -15,7 +15,8 @@ class OnReadyEvent(commands.Cog):
         playerdb = get_playerdb()
         players = playerdb.find({})
         for player in players:
-            playerdb.update_one({"_id": player["_id"]}, {"$inc": {"mana": 10}})
+            if player["mana"] < 500:
+                playerdb.update_one({"_id": player["_id"]}, {"$inc": {"mana": 10}})
 
     @commands.Cog.listener()
     async def on_ready(self):

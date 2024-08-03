@@ -37,7 +37,7 @@ class ItemView(nextcord.ui.View):
 async def work(interaction: Interaction):
     playerdb = get_playerdb()
     player = playerdb.find_one({"_id": interaction.user.id})
-    randommoney = randint(1, 37)
+    randommoney = randint(1, 7)
     randomxp = randint(1, 10)
     if player is None:
         await interaction.response.send_message("Start your adventure first by doing /start", ephemeral=True)
@@ -63,13 +63,15 @@ async def work(interaction: Interaction):
                 await interaction.followup.send(
                     f"Your inventory is full!\nIf you want to keep the item : {new_item['name']} delete an item",
                     view=ItemView(same_type_items, new_item), ephemeral=True)
+            else:
+                pass
             if playerxp >= playerlevel * 105.3:
                 playerdb.update_one({"_id": interaction.user.id}, {"$inc": {"mana": 100}})
                 playerdb.update_one({"_id": interaction.user.id}, {"$inc": {"level": 1, "xp": -playerlevel * 100}})
+                playerdb.update_one({"_id": interaction.user.id}, {"$inc": {"speed": 0.1*playerlevel, "dexterity": 0.1*playerlevel, "intelligence": 0.1*playerlevel}})
+                playerdb.update_one({"_id": interaction.user.id}, {"$inc": {"health": 10, "strength": 3}})
+
                 await interaction.followup.send("You leveled up!", ephemeral=True)
-
-
-
 
 
 def setup(bot):

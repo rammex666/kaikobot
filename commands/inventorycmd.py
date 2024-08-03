@@ -4,12 +4,31 @@ from db_utils import get_equipmentdb, get_inventorydb, get_playerdb
 from nextcord.ext import commands
 from inventory import get_items_by_owner
 import nextcord
-
+from nextcord.ui import View, button
+from nextcord import ButtonStyle, Interaction
 
 class InventoryCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+
+class PaginationView(View):
+    def __init__(self, embeds):
+        super().__init__()
+        self.embeds = embeds
+        self.current_page = 0
+
+    @button(label="Précédent", style=ButtonStyle.primary)
+    async def previous_button(self, button, interaction: Interaction):
+        if self.current_page > 0:
+            self.current_page -= 1
+            await interaction.response.edit_message(embed=self.embeds[self.current_page])
+
+    @button(label="Suivant", style=ButtonStyle.primary)
+    async def next_button(self, button, interaction: Interaction):
+        if self.current_page < len(self.embeds) - 1:
+            self.current_page += 1
+            await interaction.response.edit_message(embed=self.embeds[self.current_page])
 
 @bot.slash_command(name="inventory", description="Look at your inventory")
 async def inventory(interaction: Interaction):
@@ -22,17 +41,20 @@ async def inventory(interaction: Interaction):
         if not items:
             await interaction.response.send_message("You don't have any items in your inventory", ephemeral=True)
         else:
-            description = ""
-            for item in items:
-                description += f"Item: {item['name']}\nQuantity: {item['quantity']}\nQuality: {item['quality']}\nLevel: {item['level']}\nXP: {item['xp']}\n\n"
-            embed = nextcord.Embed(
-                title=" ",
-                description=description,
-                color=nextcord.Color.random()
-            )
-            embed.set_footer(text="Kaiko v1.0")
-            embed.set_author(name=f"{interaction.user.name}'s inventory", icon_url=interaction.user.avatar.url)
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            embeds = []
+            items_per_page = 10
+            for i in range(0, len(items), items_per_page):
+                embed = nextcord.Embed(
+                    title=" ",
+                    color=nextcord.Color.random()
+                )
+                for item in items[i:i+items_per_page]:
+                    embed.add_field(name=f"Item: {item['name']}", value=f"Quantity: {item['quantity']}\nQuality: {item['quality']}\nLevel: {item['level']}\nXP: {item['xp']}", inline=True)
+                embed.set_footer(text=f"Kaiko v1.0 | Page {i//items_per_page + 1} de {len(items)//items_per_page + 1}")
+                embed.set_author(name=f"{interaction.user.name}'s inventory", icon_url=interaction.user.avatar.url)
+                embeds.append(embed)
+            view = PaginationView(embeds)
+            await interaction.response.send_message(embed=embeds[0], view=view, ephemeral=True)
 
 
 def setup(bot):
