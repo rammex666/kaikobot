@@ -1,6 +1,6 @@
 from nextcord import SelectOption, Interaction
 from main import bot
-from db_utils import get_equipmentdb, get_inventorydb, get_playerdb
+from db_utils import get_inventorydb, get_playerdb
 from nextcord.ext import commands
 from random import randint
 from inventory import generate_item, get_items_by_owner

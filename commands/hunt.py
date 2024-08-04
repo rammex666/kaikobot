@@ -10,10 +10,6 @@ import asyncio
 import nextcord
 
 
-
-
-
-
 def get_drop(monster, owner_id):
     items, probabilities = zip(*monster["drop"].items())
     drop = random.choices(items, probabilities)[0]
@@ -176,6 +172,17 @@ class HuntCommands(commands.Cog):
                     await asyncio.sleep(1.5)
 
         if player_hp > 0:
+            monstername = monster['name']
+            monsterxp = {
+                "Dwarf": 50,
+                "Leprechaun": 50,
+                "Troll": 40,
+                "Daemon": 70,
+                "Elf": 70,
+                "Dragon": 2000,
+                "Orc": 35,
+                "Goblin": 35,
+            }
             embed.description += f"\n\nCongratulations! You defeated the {monster['name']}!"
             await interaction.edit_original_message(embed=embed)
             get_drop(monster, interaction.user.id)
@@ -183,13 +190,16 @@ class HuntCommands(commands.Cog):
             embed.description += f"\n\nYou received a drop from the {monster['name']}!"
             await interaction.edit_original_message(embed=embed)
             playerdb.update_one({"_id": interaction.user.id}, {"$inc": {"mana": -35}})
-            playerdb.update_one({"_id": interaction.user.id}, {"$inc": {"xp": 35}})
+            playerdb.update_one({"_id": interaction.user.id}, {"$inc": {"xp": monsterxp.get(monstername, 0)}})
             playerlevel = player["level"]
             playerxp = player["xp"]
+
             if playerxp >= playerlevel * 105.3:
                 playerdb.update_one({"_id": interaction.user.id}, {"$inc": {"mana": 100}})
                 playerdb.update_one({"_id": interaction.user.id}, {"$inc": {"level": 1, "xp": -playerlevel * 100}})
-                playerdb.update_one({"_id": interaction.user.id}, {"$inc": {"speed": 0.1*playerlevel, "dexterity": 0.1*playerlevel, "intelligence": 0.1*playerlevel}})
+                playerdb.update_one({"_id": interaction.user.id}, {
+                    "$inc": {"speed": 0.1 * playerlevel, "dexterity": 0.1 * playerlevel,
+                             "intelligence": 0.1 * playerlevel}})
                 playerdb.update_one({"_id": interaction.user.id}, {"$inc": {"health": 10, "strength": 3}})
 
                 await interaction.followup.send("You leveled up!", ephemeral=True)
