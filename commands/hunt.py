@@ -114,11 +114,12 @@ class HuntCommands(commands.Cog):
                 break
         if player["level"] <= 5:
             monster = spawn_monster(getlv5monster())
-        if player["level"] <= 10:
+        elif player["level"] <= 10:
             monster = spawn_monster(getlv10monster())
-        if player["level"] <= 20:
+        elif player["level"] <= 20:
             monster = spawn_monster(getlv20monster())
-
+        else:
+            monster = spawn_monster(getlv20monster())
         embed.description = "You have arrived at the monster's location!\n\nYou Founded a " + monster[
             "name"] + "!\n\n" + "Strength: " + str(monster["strength"]) + "\nHealth: " + str(monster["health"])
         embed.set_image(url=monster["image"])
