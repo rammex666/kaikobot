@@ -104,12 +104,12 @@ class DuelRequestView(nextcord.ui.View):
             turn += 1
 
         if player_hp > 0:
-            embed.description += (f"{self.challenger.mention} won the duel !")
+            embed.description += (f"\n{self.challenger.mention} won the duel !")
             await message.edit(embed=embed)
             playerdb.update_one({"_id": player["_id"]}, {"$inc": {"mana": -50}})
             playerdb.update_one({"_id": opponent["_id"]}, {"$inc": {"mana": -50}})
         else:
-            embed.description +=(f"{self.opponent.mention} won the duel !")
+            embed.description +=(f"\n{self.opponent.mention} won the duel !")
             await message.edit(embed=embed)
             playerdb.update_one({"_id": player["_id"]}, {"$inc": {"mana": -50}})
             playerdb.update_one({"_id": opponent["_id"]}, {"$inc": {"mana": -50}})
