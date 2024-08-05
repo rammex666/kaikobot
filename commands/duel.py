@@ -61,6 +61,11 @@ class DuelRequestView(nextcord.ui.View):
     async def start_duel(self, interaction):
         playerdb = get_playerdb()
         equipmentdb = get_equipmentdb()
+        embed = nextcord.Embed(
+            title="Fight !",
+            description="",
+            color = nextcord.Colour.random()
+        )
 
         player = playerdb.find_one({"_id": self.challenger.id})
         opponent = playerdb.find_one({"_id": self.opponent.id})
@@ -86,22 +91,21 @@ class DuelRequestView(nextcord.ui.View):
         while player_hp > 0 and opponent_hp > 0:
             if turn % 2 == 0:
                 opponent_hp -= player_damage
-                await interaction.followup.send(
-                    f"{self.challenger.mention} attacked {self.opponent.mention}! {self.opponent.mention} has {opponent_hp} HP left.")
+
+                embed.description = (f"{self.challenger.mention} attacked {self.opponent.mention}! {self.opponent.mention} has {opponent_hp} HP left.")
             else:
                 player_hp -= opponent_damage
-                await interaction.followup.send(
-                    f"{self.opponent.mention} attacked {self.challenger.mention}! {self.challenger.mention} has {player_hp} HP left.")
+                embed.description += (f"\n{self.opponent.mention} attacked {self.challenger.mention}! {self.challenger.mention} has {player_hp} HP left.")
 
             await asyncio.sleep(1.5)
             turn += 1
 
         if player_hp > 0:
-            await interaction.followup.send(f"{self.challenger.mention} won the duel !")
+            embed.description += (f"{self.challenger.mention} won the duel !")
             playerdb.update_one({"_id": player["_id"]}, {"$inc": {"mana": -50}})
             playerdb.update_one({"_id": opponent["_id"]}, {"$inc": {"mana": -50}})
         else:
-            await interaction.followup.send(f"{self.opponent.mention} won the duel !")
+            embed.description +=(f"{self.opponent.mention} won the duel !")
             playerdb.update_one({"_id": player["_id"]}, {"$inc": {"mana": -50}})
             playerdb.update_one({"_id": opponent["_id"]}, {"$inc": {"mana": -50}})
 
