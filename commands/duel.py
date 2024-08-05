@@ -67,6 +67,8 @@ class DuelRequestView(nextcord.ui.View):
             color = nextcord.Colour.random()
         )
 
+        await interaction.channel.send(embed=embed)
+
         player = playerdb.find_one({"_id": self.challenger.id})
         opponent = playerdb.find_one({"_id": self.opponent.id})
 
