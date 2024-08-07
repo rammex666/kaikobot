@@ -2,6 +2,7 @@ from db_utils import get_equipmentdb, get_inventorydb, get_playerdb
 import random
 from items import *
 
+
 def add_item_to_inventory(owner_id, name, quantity, quality, level, xp, type, damage, durability, description, rarity):
     inventorydb = get_inventorydb()
     item = {"owner_id": owner_id, "name": name, "quantity": quantity, "quality": quality, "level": level, "xp": xp,
@@ -21,11 +22,11 @@ def generate_item(owner_id):
     if itemgenerate > 93:
         if level <= 5:
             items = getitemlv5()
-        if level <= 10:
+        elif level <= 10:
             items = getitemlv10()
-        if level <= 20:
+        elif level <= 20:
             items = getitemlv20()
-        if level >= 90:
+        elif level >= 90:
             items = getitemlv90()
         new_item = random.choice(items)
         new_item["owner_id"] = owner_id

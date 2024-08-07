@@ -223,3 +223,6 @@ def getitemlv10():
 
 def getitemlv90():
     return itemslv90
+
+def getitemlv20():
+    return itemslv20

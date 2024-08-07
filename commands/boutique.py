@@ -7,7 +7,8 @@ from nextcord.ext import commands
 import nextcord
 
 ALLOWED_IDS = [926163972397355049]
-
+# Add this at the top of the file
+active_shoppers = set()
 
 class ShopCommands(commands.Cog):
     def __init__(self, bot):
@@ -99,6 +100,7 @@ class SellSelect(nextcord.ui.Select):
         selected_item_id = self.values[0]
         selected_item = next((item for item in self.items if str(item['_id']) == selected_item_id), None)
         self.view.stop()
+        item_price = self.shop_commands.get_item_price(selected_item['name'])
         if selected_item:
             player_equipment = get_equipmentdb().find_one({"_id": interaction.user.id})
             if player_equipment and any(equipment_id == selected_item_id for equipment_id in player_equipment.values()):
@@ -107,7 +109,6 @@ class SellSelect(nextcord.ui.Select):
                         get_equipmentdb().update_one({"_id": interaction.user.id}, {"$unset": {equipment_type: ""}})
                         await interaction.response.send_message(f"You sold {selected_item['name']} for {item_price} money.", ephemeral=True)
             get_inventorydb().delete_one({"_id": ObjectId(selected_item_id)})
-            item_price = self.shop_commands.get_item_price(selected_item['name'])
             get_playerdb().update_one({"_id": interaction.user.id}, {"$inc": {"money": item_price}})
             await interaction.response.send_message(f"You sold {selected_item['name']} for {item_price} money.",
                                                      ephemeral=True)
@@ -140,6 +141,7 @@ class SellView(nextcord.ui.View):
             self.add_item(PaginationButton("Next", items, page_number + 1, shop_commands))
 
 
+# Modify the ShopSelect class to remove the user from the set when they finish interacting
 class ShopSelect(nextcord.ui.Select):
     def __init__(self, shop_commands):
         options = [
@@ -169,19 +171,35 @@ class ShopSelect(nextcord.ui.Select):
         elif value == "sell":
             items = get_items_by_owner(interaction.user.id)
             await interaction.response.edit_message(view=SellView(items, 0, self.shop_commands))
+        active_shoppers.discard(interaction.user.id)
 
-
+# Modify the ShopView class to remove the user from the set when they finish interacting
 class ShopView(nextcord.ui.View):
     def __init__(self, shop_commands):
         super().__init__()
+        self.shop_commands = shop_commands
         self.add_item(ShopSelect(shop_commands))
 
+    async def interaction_check(self, interaction: nextcord.Interaction) -> bool:
+        if interaction.user.id in active_shoppers:
+            return True
+        return False
 
+    async def on_timeout(self):
+        active_shoppers.discard(self.interaction.user.id)
+
+
+# Modify the shop command
 @bot.slash_command(name="shop", description="Buy or sell items")
 async def shop(interaction: Interaction):
+    if interaction.user.id in active_shoppers:
+        await interaction.response.send_message("You are already using the shop. Please finish your current session "
+                                                "first.", ephemeral=True)
+        return
+
+    active_shoppers.add(interaction.user.id)
     shop_commands = ShopCommands(bot)
     await interaction.response.send_message("Welcome to the shop!", view=ShopView(shop_commands), ephemeral=True)
-
 
 def setup(bot):
     bot.add_cog(ShopCommands(bot))
