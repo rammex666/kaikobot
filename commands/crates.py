@@ -57,15 +57,19 @@ class CrateCommands(commands.Cog):
 
         message = await interaction.followup.send("Opening crate...")
 
-        delay = 0.1
-        for _ in range(10):
-            await message.edit(content=f"Opening crate... {random.choice(emojis)}")
+        delay = 0.01
+        for _ in range(50):
+            display_emojis = ''.join(random.choices(emojis, k=5))
+            await message.edit(content=f"Opening crate... \n{display_emojis}")
             await asyncio.sleep(delay)
-            delay += 0.1
+            delay += 0.01
 
         final_emoji = random.choice(emojis)
         final_item = next(item for item in box['items'] if item_emojis[item['name']] == final_emoji)
-        add_item_to_inventory(interaction.user.id, **final_item)
+
+        # Remove the 'chance' field before adding the item to the inventory
+        final_item_data = {k: v for k, v in final_item.items() if k != 'chance'}
+        add_item_to_inventory(interaction.user.id, **final_item_data)
 
         await message.edit(content=f"Congratulations! You obtained: {final_emoji} {final_item['name']}")
 def setup(bot):
