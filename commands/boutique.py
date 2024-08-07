@@ -10,6 +10,7 @@ ALLOWED_IDS = [926163972397355049]
 # Add this at the top of the file
 active_shoppers = set()
 
+
 class ShopCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -24,6 +25,11 @@ class ShopCommands(commands.Cog):
             "Uncommon Shield": 20,
             "Uncommon Chestplate": 20,
             "Uncommon Boots": 20,
+            "Rare Helmet": 40,
+            "Rare Sword": 40,
+            "Rare Shield": 40,
+            "Rare Chestplate": 40,
+            "Rare Boots": 40,
             "gold": 10,
             "Rock": 5,
             "Wood": 5,
@@ -107,11 +113,16 @@ class SellSelect(nextcord.ui.Select):
                 for equipment_type, equipment_id in player_equipment.items():
                     if equipment_id == selected_item_id:
                         get_equipmentdb().update_one({"_id": interaction.user.id}, {"$unset": {equipment_type: ""}})
-                        await interaction.response.send_message(f"You sold {selected_item['name']} for {item_price} money.", ephemeral=True)
-            get_inventorydb().delete_one({"_id": ObjectId(selected_item_id)})
+                        await interaction.response.send_message(
+                            f"You sold {selected_item['name']} for {item_price} money.", ephemeral=True)
+            if selected_item['quantity'] > 1:
+                get_inventorydb().update_one({"_id": ObjectId(selected_item_id)}, {"$inc": {"quantity": -1}})
+            else:
+                get_inventorydb().delete_one({"_id": ObjectId(selected_item_id)})
             get_playerdb().update_one({"_id": interaction.user.id}, {"$inc": {"money": item_price}})
             await interaction.response.send_message(f"You sold {selected_item['name']} for {item_price} money.",
-                                                     ephemeral=True)
+                                                    ephemeral=True)
+
 
 class PaginationButton(nextcord.ui.Button):
     def __init__(self, label, items, page_number, shop_commands):
@@ -173,6 +184,7 @@ class ShopSelect(nextcord.ui.Select):
             await interaction.response.edit_message(view=SellView(items, 0, self.shop_commands))
         active_shoppers.discard(interaction.user.id)
 
+
 # Modify the ShopView class to remove the user from the set when they finish interacting
 class ShopView(nextcord.ui.View):
     def __init__(self, shop_commands):
@@ -200,6 +212,7 @@ async def shop(interaction: Interaction):
     active_shoppers.add(interaction.user.id)
     shop_commands = ShopCommands(bot)
     await interaction.response.send_message("Welcome to the shop!", view=ShopView(shop_commands), ephemeral=True)
+
 
 def setup(bot):
     bot.add_cog(ShopCommands(bot))
